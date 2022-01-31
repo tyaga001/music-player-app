@@ -5,7 +5,6 @@ import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 import Home from "./Home";
 import { Switch, BrowserRouter as Router, Route } from "react-router-dom";
-import Footer from "./Footer";
 import SessionExpiredPopup from "./SessionExpiredPopup";
 import axios from "axios";
 Session.addAxiosInterceptors(axios);
@@ -17,21 +16,13 @@ export function getApiDomain() {
 }
 
 export function getWebsiteDomain() {
-    const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3000;
+    const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3006;
     const websiteUrl = process.env.REACT_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
     return websiteUrl;
 }
 
 
 function App() {
-    // axios.interceptors.request.use(function (config) {
-    //     // Do something before request is sent
-    //     console.log(config);
-    //     return config;
-    //   }, function (error) {
-    //     // Do something with request error
-    //     return Promise.reject(error);
-    //   })
     const [alreadyExists, setAlreadyExists] = useState(false);
     const elementRef = useRef();
     const [loaded, setLoaded] = useState(false);

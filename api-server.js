@@ -1,9 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const util = require('util');
 const morgan = require("morgan");
 const helmet = require("helmet");
-const mysql = require('mysql');
+const axios = require('axios');
 let supertokens = require("supertokens-node");
 let Session = require("supertokens-node/recipe/session");
 let { verifySession } = require("supertokens-node/recipe/session/framework/express");
@@ -11,16 +10,8 @@ let { middleware, errorHandler } = require("supertokens-node/framework/express")
 let EmailPassword = require("supertokens-node/recipe/emailpassword");
 const apiPort = process.env.REACT_APP_API_PORT || 3001;
 const apiDomain = process.env.REACT_APP_API_URL || `http://localhost:${apiPort}`;
-const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3000;
+const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3006;
 const websiteDomain = process.env.REACT_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
-const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Selenium@123",
-    database: "super_tokesn"
-});
-con.connect();
-const query = util.promisify(con.query).bind(con);
 const userId = {};
 supertokens.init({
     framework: "express",
@@ -34,28 +25,27 @@ supertokens.init({
         apiDomain, // TODO: Change to your app's API domain
         websiteDomain, // TODO: Change to your app's website domain
     },
-    recipeList: [EmailPassword.init({
-            override: {
+    recipeList: [EmailPassword.init(
+        {
+                override: {
                 apis: (originalImplementation) => {
                     return {
                         ...originalImplementation,
 
-                        signInPOST: async({ formFields, options }) => {
-                            console.log(formFields)
-
-                            let email = formFields.filter((f) => f.id === "email")[0].value;
+                        signInPOST: async ({formFields, options}) => {
+                                     let email = formFields.filter((f) => f.id === "email")[0].value;
                             let password = formFields.filter((f) => f.id === "password")[0].value;
-
-
+                        
+                           
                             // const res = await query(`select * from user where email='${email}'`)
-                            if (userId[email]) {
-                                let sessionHandles = await Session.getAllSessionHandlesForUser(userId[email]);
-                                if (sessionHandles.length > 0) {
-                                    return {
-                                        status: 'SESSION_ALREADY_EXISTS'
-                                    }
+                            if(userId[email]) {
+                            let sessionHandles = await Session.getAllSessionHandlesForUser(userId[email]);
+                            if(sessionHandles.length > 0) {
+                                return {
+                                    status: 'SESSION_ALREADY_EXISTS'
                                 }
-                            }
+                            } 
+                        }
                             let response = await options.recipeImplementation.signIn({ email, password });
                             if (response.status === "WRONG_CREDENTIALS_ERROR") {
                                 return response;
@@ -71,12 +61,13 @@ supertokens.init({
                                 user,
                             };
                         },
-
+                        
                     }
                 },
             }
-        }), Session.init(),
-
+    }
+    ), Session.init(),
+        
     ],
 });
 
@@ -101,12 +92,12 @@ app.use(
 app.use(middleware());
 
 // custom API that requires session verification
-app.get("/sessioninfo", verifySession(), async(req, res) => {
+app.get("/sessioninfo", verifySession(), async (req, res) => {
     debugger;
     let session = await Session.getSession(req, res);
     let data = await session.getSessionData()
     console.log('session', data)
-        // console.log('Session', Session.getSession(req, res));
+    // console.log('Session', Session.getSession(req, res));
     res.send({
         sessionHandle: session.getHandle(),
         userId: session.getUserId(),
@@ -114,32 +105,15 @@ app.get("/sessioninfo", verifySession(), async(req, res) => {
     });
 });
 
-app.get("/sessioninfo", verifySession(), async(req, res) => {
-    debugger;
-    let session = await Session.getSession(req, res);
-    let data = await session.getSessionData()
-    console.log('session', data)
-        // console.log('Session', Session.getSession(req, res));
-    res.send({
-        sessionHandle: session.getHandle(),
-        userId: session.getUserId(),
-        accessTokenPayload: session.getAccessTokenPayload(),
-    });
-});
-
-app.post("/postSignOut", async(req, res) => {
-    const email = req.body.email;
-    await query(`delete from user where email='${email}'`);
-    res.send({
-        status: 'OK'
-    })
-
+app.get("/songs", verifySession(), async (req, res) => {
+    const resp = await axios.get('https://functions-cust-fun-sandy.harperdbcloud.com/api/songs');
+    console.log('songs');
+    res.send(resp.data);
 });
 
 app.use(errorHandler());
 
 app.use((err, req, res, next) => {
-    console.log(err);
     res.status(500).send("Internal error: " + err.message);
 });
 

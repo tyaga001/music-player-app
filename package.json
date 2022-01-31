@@ -26,7 +26,7 @@
         "nodemon": "^2.0.12"
     },
     "scripts": {
-        "start": "npm-run-all --parallel spa api-server",
+        "start": "set PORT=3006 && npm-run-all --parallel spa api-server",
         "spa": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",

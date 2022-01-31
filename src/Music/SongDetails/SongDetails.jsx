@@ -15,7 +15,7 @@ export default function SongDetail ({
             <div id="active">
               <strong>Now playing</strong>
             </div>
-            <div className="header">{songs[selectedSongId].name}</div>
+            <div>{songs[selectedSongId]?.name}</div>
           </div>
           <div className="album-img">
             {/* <img
@@ -25,10 +25,10 @@ export default function SongDetail ({
           </div>
           <div className="artist-img">
             <img
-              src={songs[selectedSongId].links.images[0].url}
-              alt={songs[selectedSongId].author}
+              src={songs[selectedSongId]?.links.images[0].url}
+              alt={songs[selectedSongId]?.author}
             />
-            <p className="artist-name">{songs[selectedSongId].author}</p>
+            <p className="artist-name">{songs[selectedSongId]?.author}</p>
           </div>
         </>
       );
@@ -43,7 +43,7 @@ export default function SongDetail ({
       className="song-detail"
       style={{
         backgroundImage: `url(
-          ${songs[selectedSongId].links.images[1].url}
+          ${songs[selectedSongId]?.links.images[1].url}
         )`,
       }}
     >

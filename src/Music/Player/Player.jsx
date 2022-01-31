@@ -1,15 +1,13 @@
 import "./Player.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { forwardsSvg, backwardsSvg, shuffleSvg } from "../svg";
 import Progress from "../ProgressBar/ProgressBar";
 import SongTime from "./SongTime";
 
 export default function Player ({
     selectedSongId,
-    defaultSong,
     songs,
-    selectSongById,
-    volume,
+    selectSongById
 }) {
 
     const [shuffled, setShuffled] = useState(false);
@@ -19,37 +17,31 @@ export default function Player ({
     const [playerState, setPlayerState] = useState(false);
     const audioRef = useRef();
     let intervalRef = useRef();
-    let clicked = false;
+    let clicked = useRef(false);
 
-    const spaceDownFunc = (event) => {
-        if (event.keyCode === 32 && !clicked) {
-            clicked = true;
+    const spaceDownFunc = useCallback(event => {
+        if (event.keyCode === 32 && !clicked.current) {
+            clicked.current = true;
             document.getElementsByClassName("main-control")[0].click();
         }
-    };
-    const spaceUpFunc = (event) => {
-        if (event.keyCode === 32 && clicked) {
-            clicked = false;
+    }, []);
+    const spaceUpFunc = useCallback(event => {
+        if (event.keyCode === 32 && clicked.current) {
+            clicked.current = false;
         }
-    };
+    }, []);
 
     useEffect(() => {
         document.addEventListener("keydown", spaceDownFunc);
         document.addEventListener("keyup", spaceUpFunc);
        return () => {
           clearInterval(intervalRef.current);
+          document.removeEventListener("keydown", spaceDownFunc);
+          document.removeEventListener("keyup", spaceUpFunc);
        }
-    }, []);
+    }, [spaceDownFunc, spaceUpFunc]);
 
-    // useEffect(() => {
-    //     return () => {
-    //         // document.removeEventListener(spaceDownFunc);
-    //         // document.removeEventListener(spaceUpFunc);
-    //         clearInterval(intervalRef.current);
-    //     }
-    // })
-
-    if (selectedSongId < 0 || selectedSongId > songs.length - 1) {
+     if (selectedSongId < 0 || selectedSongId > songs.length - 1) {
         selectSongById(0);
     }
 
@@ -62,7 +54,6 @@ export default function Player ({
     const onMusicPlay = (e) => {
         e.preventDefault();
         setPlayerState(prev => !prev);
-       
     };
 
     const onBackwardClick = () => {
@@ -77,21 +68,14 @@ export default function Player ({
     };
 
     useEffect(() => {
-        // dispatch({ type: "PLAYER_STATE_SELECTED", payload: 1 });
-        setPlayerState(true);
-        // console.log(audioRef.current.duration);
-        // document.getElementById("focus-link").click();
-        // window.history.pushState({}, "", "/");
-    }, [selectedSongId]);
+        setPlayerState(true)
+    }, [selectedSongId])
+
     useEffect(() => {
-        // dispatch({ type: "PLAYER_STATE_SELECTED", payload: 0 });
-        // audioRef.current.pause();
         if (playerState) {
             audioRef.current.play();
-            // dispatch({ type: "PLAYER_STATE_SELECTED", payload: 1 });
         } else {
             audioRef.current.pause();
-            // dispatch({ type: "PLAYER_STATE_SELECTED", payload: 0 });
         }
     }, [playerState, selectedSongId]);
 
@@ -103,7 +87,6 @@ export default function Player ({
                 id={shuffled ? `active` : null}
                 onClick={() => {
                     setShuffled(!shuffled);
-                    // console.log("shuffle: " + !shuffled);
                 }}
             >
                 {shuffleSvg}
@@ -137,16 +120,8 @@ export default function Player ({
                     );
                 }}
                 onLoadedMetadata={() => {
-                    // dispatch({
-                    //     type: "SET_DURATION",
-                    //     payload: audioRef.current.duration,
-                    // });
                    setDuration(audioRef.current.duration);
                    intervalRef.current =  setInterval(() => {
-                        // dispatch({
-                        //     type: "SET_CURRENT_LOCATION",
-                        //     payload: audioRef.current.currentTime,
-                        // });
                         if (audioRef.current) {
                         setCurrenTime( audioRef.current.currentTime)
                         } else {
