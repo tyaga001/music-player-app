@@ -12,27 +12,23 @@
     background-color: #1e293b;
     border-radius: 3px;
     color: #cbd5e1;
-    font-family: Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+    font-family: Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     font-size: 20px;
 }
 .tarck-number {
-    /* width: 20%; */
     padding: 15px;
-
 }
 .track-title {
-    /* width: 40%; */
     padding: 15px;
 }
 .track-author {
-    /* width: 40%; */
     padding: 15px;
 }
 .song-list {
     display: grid;
     grid-template-columns: 10% 50% 30% 10%;
     cursor: pointer;
-    font-family: Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+    font-family: Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     font-size: 20px;
 }
 .song-main {

@@ -5,8 +5,7 @@ import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { useHistory } from "react-router-dom";
 import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 
-export default function Home({ loggedUser }) {
-    console.log(useSessionContext());
+export default function Home() {
     const { userId } = useSessionContext();
     const history = useHistory();
 

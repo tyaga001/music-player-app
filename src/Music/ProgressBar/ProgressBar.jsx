@@ -4,7 +4,7 @@ import "./ProgressBar.css";
 export default class ProgressBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showTooltip: false};
+        this.state = { showTooltip: false };
     }
     render() {
         return (
@@ -16,10 +16,10 @@ export default class ProgressBar extends React.Component {
                     className="slider"
                     value={this.props.volume}
                     onChange={(e) => this.props.setVolume(e.target.value)}
-                    onMouseEnter={() => this.setState({showTooltip: true})}
-                    onMouseLeave={() => this.setState({showTooltip: false})}
+                    onMouseEnter={() => this.setState({ showTooltip: true })}
+                    onMouseLeave={() => this.setState({ showTooltip: false })}
                 />
-                {this.state.showTooltip ? <span className="tooltip">{ this.props.volume}</span> : null}
+                {this.state.showTooltip && <span className="tooltip">{this.props.volume}</span>}
             </div>
         );
     }

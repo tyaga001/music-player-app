@@ -4,12 +4,7 @@ import { forwardsSvg, backwardsSvg, shuffleSvg } from "../svg";
 import Progress from "../ProgressBar/ProgressBar";
 import SongTime from "./SongTime";
 
-export default function Player ({
-    selectedSongId,
-    songs,
-    selectSongById
-}) {
-
+export default function Player({ selectedSongId, songs, selectSongById }) {
     const [shuffled, setShuffled] = useState(false);
     const [currentTime, setCurrenTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -19,13 +14,13 @@ export default function Player ({
     let intervalRef = useRef();
     let clicked = useRef(false);
 
-    const spaceDownFunc = useCallback(event => {
+    const spaceDownFunc = useCallback((event) => {
         if (event.keyCode === 32 && !clicked.current) {
             clicked.current = true;
             document.getElementsByClassName("main-control")[0].click();
         }
     }, []);
-    const spaceUpFunc = useCallback(event => {
+    const spaceUpFunc = useCallback((event) => {
         if (event.keyCode === 32 && clicked.current) {
             clicked.current = false;
         }
@@ -34,14 +29,14 @@ export default function Player ({
     useEffect(() => {
         document.addEventListener("keydown", spaceDownFunc);
         document.addEventListener("keyup", spaceUpFunc);
-       return () => {
-          clearInterval(intervalRef.current);
-          document.removeEventListener("keydown", spaceDownFunc);
-          document.removeEventListener("keyup", spaceUpFunc);
-       }
+        return () => {
+            clearInterval(intervalRef.current);
+            document.removeEventListener("keydown", spaceDownFunc);
+            document.removeEventListener("keyup", spaceUpFunc);
+        };
     }, [spaceDownFunc, spaceUpFunc]);
 
-     if (selectedSongId < 0 || selectedSongId > songs.length - 1) {
+    if (selectedSongId < 0 || selectedSongId > songs.length - 1) {
         selectSongById(0);
     }
 
@@ -53,7 +48,7 @@ export default function Player ({
 
     const onMusicPlay = (e) => {
         e.preventDefault();
-        setPlayerState(prev => !prev);
+        setPlayerState((prev) => !prev);
     };
 
     const onBackwardClick = () => {
@@ -68,8 +63,8 @@ export default function Player ({
     };
 
     useEffect(() => {
-        setPlayerState(true)
-    }, [selectedSongId])
+        setPlayerState(true);
+    }, [selectedSongId]);
 
     useEffect(() => {
         if (playerState) {
@@ -81,31 +76,25 @@ export default function Player ({
 
     return (
         <div id="player">
-            <SongTime currentLocation={currentTime} duration={duration}/>
+            <SongTime currentLocation={currentTime} duration={duration} />
             <div
                 className="control"
                 id={shuffled ? `active` : null}
                 onClick={() => {
                     setShuffled(!shuffled);
-                }}
-            >
+                }}>
                 {shuffleSvg}
             </div>
             <div className="control" onClick={onBackwardClick}>
                 {backwardsSvg}
             </div>
             <div className="main-control control" onClick={onMusicPlay}>
-                <i
-                    className={`fas fa-${
-                        playerState ? "pause" : "play"
-                    }-circle`}
-                ></i>
+                <i className={`fas fa-${playerState ? "pause" : "play"}-circle`}></i>
             </div>
             <div className="control" onClick={onForwardClick}>
                 {forwardsSvg}
             </div>
-            <Progress value={currentVolume}  setVolume = {vol => setCurrentVolume(vol)}/>
-            
+            <Progress value={currentVolume} setVolume={(vol) => setCurrentVolume(vol)} />
 
             <audio
                 id="main-track"
@@ -113,30 +102,23 @@ export default function Player ({
                 src={songs[selectedSongId].url}
                 preload="true"
                 onEnded={() => {
-                    selectSongById(
-                        shuffled
-                            ? Math.round(Math.random() * songs.length)
-                            : selectedSongId + 1
-                    );
+                    selectSongById(shuffled ? Math.round(Math.random() * songs.length) : selectedSongId + 1);
                 }}
                 onLoadedMetadata={() => {
-                   setDuration(audioRef.current.duration);
-                   intervalRef.current =  setInterval(() => {
+                    setDuration(audioRef.current.duration);
+                    intervalRef.current = setInterval(() => {
                         if (audioRef.current) {
-                        setCurrenTime( audioRef.current.currentTime)
+                            setCurrenTime(audioRef.current.currentTime);
                         } else {
-                            clearInterval(intervalRef.current)
+                            clearInterval(intervalRef.current);
                         }
                     }, 1000);
                 }}
                 ref={audioRef}
-                hidden
-            >
+                hidden>
                 Your browser does not support the
                 <code>audio</code> element.
             </audio>
         </div>
     );
-};
-
-
+}

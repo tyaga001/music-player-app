@@ -8,12 +8,8 @@ export default class SongTime extends React.Component {
                 <div
                     className="completed"
                     style={{
-                        width: `${
-                            (this.props.currentLocation / this.props.duration) *
-                            100
-                        }%`,
-                    }}
-                ></div>
+                        width: `${(this.props.currentLocation / this.props.duration) * 100}%`,
+                    }}></div>
             </div>
         );
     }

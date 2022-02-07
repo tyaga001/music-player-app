@@ -1,23 +1,8 @@
 export default function Logout(props) {
     let logoutClicked = props.logoutClicked;
-
     return (
-        <div className="nav"
-           >
-            <div
-                onClick={logoutClicked}
-                style={{
-                    display: "flex",
-                    width: "116px",
-                    height: "42px",
-                    backgroundColor: "#000000",
-                    borderRadius: "10px",
-                    cursor: "pointer",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#ffffff",
-                    fontWeight: "bold",
-                }}>
+        <div className="nav">
+            <div onClick={logoutClicked} className="logout-btn">
                 SIGN OUT
             </div>
         </div>
